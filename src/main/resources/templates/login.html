@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agro Soft</title>
+    <link rel="stylesheet" th:href="@{/styles.css}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class="input-form">
+      <form method="post" th:action="@{/login}">
+        <p class="error-message" th:if="${error}" th:text="${error}"></p>
+
+        <div class="input-group">
+          <svg class="input-icon" viewBox="0 0 16 16" fill="currentColor">
+            <path
+              d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm0 1c-3 0-6 1.5-6 4v1h12v-1c0-2.5-3-4-6-4Z"
+            />
+          </svg>
+          <input type="text" name="username" id="username-input" placeholder="Username ID"/>
+        </div>
+        <div class="input-group has-toggle">
+          <svg class="input-icon" viewBox="0 0 16 16" fill="currentColor">
+            <path
+              d="M4 7V5a4 4 0 1 1 8 0v2h1v7a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7h1Zm2 0h4V5a2 2 0 1 0-4 0v2Z"
+            />
+          </svg>
+          <input type="password" name="password" id="password-input" placeholder="Password"/>
+          <button type="button" class="toggle-password" aria-label="Show password">
+          <svg class="eye-icon" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M8 3C4.5 3 1.7 5.1 0 8c1.7 2.9 4.5 5 8 5s6.3-2.1 8-5c-1.7-2.9-4.5-5-8-5Zm0 8.3A3.3 3.3 0 1 1 8 4.7a3.3 3.3 0 0 1 0 6.6Zm0-1.3a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
+              <line class="eye-slash-line" x1="1.5" y1="1.5" x2="14.5" y2="14.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+      </button>
+        </div>
+
+        <div class="form-options">
+          <label class="remember-me">
+            <input type="checkbox" id="remember-me" />
+            Remember me
+          </label>
+          <a href="#" class="forgot-password">Forgot password?</a>
+        </div>
+
+        <button class="btn-login" type="submit">LOGIN</button>
+
+        <div class="divider"><span>or</span></div>
+
+        <a th:href="@{/register}" class="btn-login btn-register">REGISTER</a>
+      </form>
+    </div>
+    <script th:src="@{/script.js}" defer></script>
+  </body>
+</html>

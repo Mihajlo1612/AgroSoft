@@ -1,0 +1,226 @@
+* {
+    font-family: 'JetBrains Mono', monospace;
+}
+
+body {
+    margin: 0;
+    background-image: url('background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.25);
+    z-index: -1;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    max-width: 380px;
+    width: 100%;
+}
+
+label {
+    display: block;
+    padding-top: 10px;
+}
+
+.input-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.btn-login, .btn-register {
+    width: 100%;
+    background-color: #457b9d;
+    color: white;
+    padding: 14px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    align-self: center;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    box-sizing: border-box;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    font-size: 14px;
+}
+
+.btn-login:hover, .btn-register:hover {
+    background-color: #1d3557;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(69, 123, 157, 0.5);
+}
+
+.card {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 30px;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.input-group {
+    position: relative;
+    margin: 8px 0;
+}
+
+.input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: #fff;
+    pointer-events: none;
+}
+
+input[type="text"], input[type="password"], input[type="email"] {
+    width: 100%;
+    padding: 12px 12px 12px 44px;
+    margin: 0;
+    display: inline-block;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    border-radius: 0;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.15s ease;
+    background: transparent;
+    color: #fff;
+}
+
+input[type="text"]::placeholder, input[type="password"]::placeholder, input[type="email"]::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 12px 0;
+    font-size: 14px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    padding-top: 0;
+    color: #fff;
+}
+
+.remember-me input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    border: 1.5px solid rgba(255, 255, 255, 0.7);
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.remember-me input[type="checkbox"]:checked {
+    background-color: #457b9d;
+    border-color: #457b9d;
+}
+
+.remember-me input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 1px;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.remember-me input[type="checkbox"]:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 2px;
+}
+
+.forgot-password {
+    color: #457b9d;
+    text-decoration: none;
+    font-style: italic;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+.input-group.has-toggle input {
+    padding-right: 40px;
+}
+
+.error-message {
+    color: #e63946;
+    text-align: center;
+    font-size: 13px;
+    margin: 0 0 8px 0;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: none;
+    background: none;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.eye-slash-line {
+    opacity: 0;
+}
+
+.toggle-password.is-active .eye-slash-line {
+    opacity: 1;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 13px;
+    margin: 4px 0;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.divider span {
+    padding: 0 10px;
+}
+
