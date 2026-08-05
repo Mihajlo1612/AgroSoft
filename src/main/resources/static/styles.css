@@ -20,12 +20,25 @@ body::before {
     z-index: -1;
 }
 
+.logo {
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 80px;
+    font-weight: 700;
+    color: #fff;
+    z-index: 1;
+    padding-top: 50px;
+}
+
 form {
     display: flex;
     justify-content: center;
     flex-direction: column;
     max-width: 380px;
     width: 100%;
+    padding-top: 80px;
 }
 
 label {
