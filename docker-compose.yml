@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: agrosoft
       POSTGRES_PASSWORD: agrosoft
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - agrosoft-postgres-data:/var/lib/postgresql/data
 

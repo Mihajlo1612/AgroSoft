@@ -1,13 +1,29 @@
 package com.agrosoft.user;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+
+@Entity
+@Table(name = "users")
 public class User {
-    
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String email;
     private String username;
     private String password;
+
+    @Transient
     private String confirmPassword;
 
     public User() {
+
     }
 
     public User(String email, String username, String password, String confirmPassword) {
@@ -15,6 +31,14 @@ public class User {
         this.username = username;
         this.password = password;
         this.confirmPassword = confirmPassword;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getEmail() {
@@ -52,10 +76,9 @@ public class User {
     @Override
     public String toString() {
         return "User{" + 
-                "email='" + email + '\'' + 
-                ", username='" + username + '\'' + 
-                ", password='" + password + '\'' + 
-                ", confirmPassword='" + confirmPassword + '\'' + 
+                "id=" + id + 
+                ", email='" + email + '\'' + 
+                ", username=" + username + '\'' + 
                 '}';
     }
 }
