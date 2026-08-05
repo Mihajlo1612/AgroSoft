@@ -1,25 +1,25 @@
 package com.agrosoft.controller;
 
-import com.agrosoft.model.User;
-import com.agrosoft.repository.UserRepository;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import com.agrosoft.model.User;
+import com.agrosoft.repository.UserRepository;
+import org.springframework.ui.Model;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class AuthController {
-
+    
     private final UserRepository userRepository;
 
     public AuthController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    @GetMapping("/")
+    @GetMapping("/") 
     public String index() {
         return "login";
     }
@@ -40,12 +40,11 @@ public class AuthController {
         return "redirect:/login";
     }
 
-    @PostMapping("/login")
-    public String login(@RequestParam String username, @RequestParam String password,
-                         HttpSession session, Model model) {
+    @PostMapping("/login") 
+    public String login(@RequestParam String username, @RequestParam String password, HttpSession session, Model model) {
         User user = userRepository.findByUsernameAndPassword(username, password);
         if (user == null) {
-            model.addAttribute("error", "Invalid username or password");
+            model.addAttribute("error", "Invalid username or password");           
             return "login";
         }
         session.setAttribute("username", user.getUsername());
@@ -57,4 +56,5 @@ public class AuthController {
         model.addAttribute("username", session.getAttribute("username"));
         return "home";
     }
+
 }
