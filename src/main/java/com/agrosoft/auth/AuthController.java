@@ -1,12 +1,14 @@
-package com.agrosoft.controller;
+package com.agrosoft.auth;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.agrosoft.model.User;
-import com.agrosoft.repository.UserRepository;
+
+import com.agrosoft.user.User;
+import com.agrosoft.user.UserRepository;
+
 import org.springframework.ui.Model;
 import jakarta.servlet.http.HttpSession;
 

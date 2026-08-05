@@ -1,11 +1,8 @@
-package com.agrosoft.repository;
+package com.agrosoft.user;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.stereotype.Repository;
-
-import com.agrosoft.model.User;
 
 @Repository
 public class UserRepository {

@@ -1,4 +1,4 @@
-package com.agrosoft.model;
+package com.agrosoft.user;
 
 public class User {
     
