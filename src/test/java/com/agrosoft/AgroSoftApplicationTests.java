@@ -9,5 +9,4 @@ class AgroSoftApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

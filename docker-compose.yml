@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: agrosoft-postgres
+    environment:
+      POSTGRES_DB: agrosoft
+      POSTGRES_USER: agrosoft
+      POSTGRES_PASSWORD: agrosoft
+    ports:
+      - "5432:5432"
+    volumes:
+      - agrosoft-postgres-data:/var/lib/postgresql/data
+
+volumes:
+  agrosoft-postgres-data:
+  
