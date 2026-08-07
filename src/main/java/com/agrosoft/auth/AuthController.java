@@ -10,7 +10,11 @@ import com.agrosoft.user.User;
 import com.agrosoft.user.UserRepository;
 
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 
 @Controller
 public class AuthController {
@@ -37,7 +41,19 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute User user) {
+    public String register(@Valid @ModelAttribute User user, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            String errorMessage = bindingResult.getFieldErrors().stream()
+                    .map(FieldError::getDefaultMessage)
+                    .findFirst()
+                    .orElse("Nevalidni podaci");
+            model.addAttribute("error", errorMessage);
+            return "register";
+        }
+        if (!user.getPassword().equals(user.getConfirmPassword())) {
+            model.addAttribute("error", "Lozinke se ne poklapaju!");
+            return "register";
+        }
         userRepository.save(user);
         return "redirect:/login";
     }

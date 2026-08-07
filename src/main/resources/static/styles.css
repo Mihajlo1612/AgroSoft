@@ -119,6 +119,17 @@ input[type="text"]::placeholder, input[type="password"]::placeholder, input[type
     color: rgba(255, 255, 255, 0.6);
 }
 
+input[type="text"]:-webkit-autofill,
+input[type="password"]:-webkit-autofill,
+input[type="email"]:-webkit-autofill {
+    -webkit-text-fill-color: #fff;
+    caret-color: #fff;
+    -webkit-box-shadow: 0 0 0px 1000px rgba(20, 20, 20, 0.55) inset;
+    box-shadow: 0 0 0px 1000px rgba(20, 20, 20, 0.55) inset;
+    transition: background-color 9999s ease-in-out 0s;
+}
+
+
 .form-options {
     display: flex;
     justify-content: space-between;

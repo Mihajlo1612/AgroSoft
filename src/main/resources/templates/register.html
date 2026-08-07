@@ -13,26 +13,28 @@
     <div class="logo">AgroSoft</div>
     <div class="input-form">
       <form method="post" th:action="@{/register}">
+        <p class="error-message" th:if="${error}" th:text="${error}"></p>
+
         <div class="input-group">
           <svg class="input-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
             <rect x="1.5" y="3.5" width="13" height="9" rx="1.5" />
             <path d="M2 4.5l6 4.5 6-4.5" />
           </svg>
-          <input type="email" name="email" id="email-input" placeholder="Email"/>
+          <input type="email" name="email" id="email-input" placeholder="Email" autocomplete="off" required/>
         </div>
 
         <div class="input-group">
           <svg class="input-icon" viewBox="0 0 16 16" fill="currentColor">
             <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm0 1c-3 0-6 1.5-6 4v1h12v-1c0-2.5-3-4-6-4Z" />
           </svg>
-          <input type="text" name="username" id="username-input" placeholder="Username ID"/>
+          <input type="text" name="username" id="username-input" placeholder="Username ID" required/>
         </div>
 
         <div class="input-group has-toggle">
           <svg class="input-icon" viewBox="0 0 16 16" fill="currentColor">
             <path d="M4 7V5a4 4 0 1 1 8 0v2h1v7a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7h1Zm2 0h4V5a2 2 0 1 0-4 0v2Z" />
           </svg>
-          <input type="password" name="password" id="password-input" placeholder="Password"/>
+          <input type="password" name="password" id="password-input" placeholder="Password" required/>
           <button type="button" class="toggle-password" aria-label="Show password">
             <svg class="eye-icon" viewBox="0 0 16 16" fill="currentColor">
               <path d="M8 3C4.5 3 1.7 5.1 0 8c1.7 2.9 4.5 5 8 5s6.3-2.1 8-5c-1.7-2.9-4.5-5-8-5Zm0 8.3A3.3 3.3 0 1 1 8 4.7a3.3 3.3 0 0 1 0 6.6Zm0-1.3a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
@@ -45,7 +47,7 @@
           <svg class="input-icon" viewBox="0 0 16 16" fill="currentColor">
             <path d="M4 7V5a4 4 0 1 1 8 0v2h1v7a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7h1Zm2 0h4V5a2 2 0 1 0-4 0v2Z" />
           </svg>
-          <input type="password" name="confirmPassword" id="confirm-password-input" placeholder="Confirm Password"/>
+          <input type="password" name="confirmPassword" id="confirm-password-input" placeholder="Confirm Password" required/>
           <button type="button" class="toggle-password" aria-label="Show password">
             <svg class="eye-icon" viewBox="0 0 16 16" fill="currentColor">
               <path d="M8 3C4.5 3 1.7 5.1 0 8c1.7 2.9 4.5 5 8 5s6.3-2.1 8-5c-1.7-2.9-4.5-5-8-5Zm0 8.3A3.3 3.3 0 1 1 8 4.7a3.3 3.3 0 0 1 0 6.6Zm0-1.3a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
