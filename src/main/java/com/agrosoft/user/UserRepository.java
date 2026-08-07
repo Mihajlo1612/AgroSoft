@@ -1,22 +1,9 @@
 package com.agrosoft.user;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Repository
-public class UserRepository {
+public interface UserRepository extends JpaRepository<User, Long> {
+
+    User findByUsernameAndPassword(String username, String password);
     
-    private final List<User> users = new ArrayList<>();
-
-    public void save(User user) {
-        users.add(user);
-    }
-
-    public User findByUsernameAndPassword(String username, String password) {
-        return users.stream()
-                .filter(u -> u.getUsername().equals(username) && u.getPassword().equals(password))
-                .findFirst()
-                .orElse(null);
-    }
 }
