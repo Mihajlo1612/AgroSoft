@@ -41,6 +41,7 @@ public class Farm {
 
     public Farm(Long id, String name, String location, BigDecimal sizeInHectars, User owner) {
         this.id = id;
+        this.name = name;
         this.location = location;
         this.sizeInHectars = sizeInHectars;
         this.owner = owner;
@@ -84,5 +85,16 @@ public class Farm {
 
     public void setSizeInHectars(BigDecimal sizeInHectars) {
         this.sizeInHectars = sizeInHectars;
+    }
+
+    @Override
+    public String toString() {
+        return "Farm{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", location='" + location + '\'' +
+                ", sizeInHectars=" + sizeInHectars +
+                ", ownerId=" + (owner != null ? owner.getId() : null) +
+                '}';
     }
 }
