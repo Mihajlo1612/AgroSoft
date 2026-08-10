@@ -11,6 +11,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -73,5 +74,34 @@ public class FarmController {
         Farm newFarm = farmRepository.save(farm);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(convertToFarmResponse(newFarm));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> changeFarmDetails(@PathVariable Long id, @Valid @RequestBody FarmRequest farmRequest, BindingResult bindingResult, @AuthenticationPrincipal User currentUser) {
+        
+        Optional<Farm> farmOptional = farmRepository.findById(id);
+        if (bindingResult.hasErrors()) {
+            String errorMessage = bindingResult.getFieldErrors().stream()
+                    .map(FieldError::getDefaultMessage)
+                    .findFirst()
+                    .orElse("Nevalid podaci!");
+            return ResponseEntity.badRequest().body(errorMessage);
+        }
+
+        if (farmOptional.isEmpty()) { 
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Gazdinstvo ne postoji!");
+        }
+
+        Farm farm = farmOptional.get();
+        if (!farm.getOwner().getId().equals(currentUser.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Zabranjen pristup!");
+        } 
+
+        farm.setName(farmRequest.getName());
+        farm.setLocation(farmRequest.getLocation());
+        farm.setSizeInHectars(farmRequest.getSizeInHectars());
+
+        farmRepository.save(farm);
+        return ResponseEntity.ok(convertToFarmResponse(farm));
     }
 }
