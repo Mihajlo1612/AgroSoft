@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -103,5 +104,22 @@ public class FarmController {
 
         farmRepository.save(farm);
         return ResponseEntity.ok(convertToFarmResponse(farm));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteFarm(@PathVariable Long id, @AuthenticationPrincipal User currentUser) {
+        Optional<Farm> farmOptional = farmRepository.findById(id);
+        
+        if (farmOptional.isEmpty()) { 
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Gazdinstvo ne postoji!");
+        }
+        Farm farm = farmOptional.get();
+
+        if (!farm.getOwner().getId().equals(currentUser.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Zabranjen pristup!");
+        } 
+
+        farmRepository.delete(farm);
+        return ResponseEntity.noContent().build();
     }
 }
