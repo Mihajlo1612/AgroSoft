@@ -12,6 +12,7 @@ import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRe
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -52,5 +53,17 @@ public class FarmControllerTest {
 
         // assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
+
+    @Test
+    public void farmDetails_returns404_whenFarmDoesNotExist() {
+        String token = registerAndLogin();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<FarmResponse> response = restTemplate.exchange("/api/farms/" + Long.MAX_VALUE, HttpMethod.GET, entity, FarmResponse.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 }
