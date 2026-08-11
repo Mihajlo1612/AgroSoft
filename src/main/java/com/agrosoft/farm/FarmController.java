@@ -33,8 +33,8 @@ public class FarmController {
     }
     
     @GetMapping
-    public List<FarmResponse> farmsList(@AuthenticationPrincipal User currUser) {
-        return farmRepository.findByOwnerId(currUser.getId())
+    public List<FarmResponse> farmsList(@AuthenticationPrincipal User currentUser) {
+        return farmRepository.findByOwnerId(currentUser.getId())
                 .stream()
                 .map(this::convertToFarmResponse)
                 .toList();
