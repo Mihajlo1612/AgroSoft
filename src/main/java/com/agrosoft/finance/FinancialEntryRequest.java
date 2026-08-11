@@ -34,9 +34,10 @@ public class FinancialEntryRequest {
 
     public FinancialEntryRequest() {}
 
-    public FinancialEntryRequest(EntryType type, BigDecimal amount, Integer year, Integer month, boolean planned, String description) {
+    public FinancialEntryRequest(EntryType type, BigDecimal amount, EntryCategory category, Integer year, Integer month, boolean planned, String description) {
         this.type = type;
         this.amount = amount;
+        this.category = category;
         this.year = year;
         this.month = month;
         this.planned = planned;

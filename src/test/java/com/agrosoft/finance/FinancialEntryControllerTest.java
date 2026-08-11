@@ -1,0 +1,64 @@
+package com.agrosoft.finance;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.math.BigDecimal;
+import java.util.UUID;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.resttestclient.TestRestTemplate;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import com.agrosoft.auth.JwtResponse;
+import com.agrosoft.auth.LoginRequest;
+import com.agrosoft.auth.RegisterRequest;
+import com.agrosoft.farm.FarmRequest;
+import com.agrosoft.farm.FarmResponse;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureTestRestTemplate
+public class FinancialEntryControllerTest {
+    
+    @Autowired
+    private TestRestTemplate restTemplate;
+
+    private String registerAndLogin() {
+        String uuid = UUID.randomUUID().toString();
+        RegisterRequest registerRequest = new RegisterRequest("user" + uuid + "@test.com", "user" + uuid, "lozinka123", "lozinka123");
+
+        restTemplate.postForEntity("/api/auth/register", registerRequest, String.class);
+
+        LoginRequest loginRequest = new LoginRequest("user" + uuid, "lozinka123");
+
+        ResponseEntity<JwtResponse> loginResponse = restTemplate.postForEntity("/api/auth/login", loginRequest, JwtResponse.class);
+
+        return loginResponse.getBody().getToken();
+    }
+
+    @Test
+    public void createEntry_returns201_whenDataIsValid() {
+        String token = registerAndLogin();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+
+        FarmRequest farmRequest = new FarmRequest("TestFarm", "Drugovac", BigDecimal.valueOf(15.3));
+
+        HttpEntity<FarmRequest> entity = new HttpEntity<>(farmRequest, headers);
+        ResponseEntity<FarmResponse> response = restTemplate.postForEntity("/api/farms", entity, FarmResponse.class);
+
+        Long farmId = response.getBody().getId();
+
+        FinancialEntryRequest financialRequest = new FinancialEntryRequest(EntryType.RASHOD, BigDecimal.valueOf(454.234), EntryCategory.POTROSNA_ROBA, 2026, 4, true, "Jagode");
+
+        HttpEntity<FinancialEntryRequest> financialEntity = new HttpEntity<>(financialRequest, headers);
+        ResponseEntity<FinancialEntryResponse> financialResponse = restTemplate.postForEntity("/api/farms/" + farmId + "/entries", financialEntity, FinancialEntryResponse.class);
+
+        assertThat(financialResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
+}
