@@ -66,4 +66,29 @@ public class FarmControllerTest {
         ResponseEntity<FarmResponse> response = restTemplate.exchange("/api/farms/" + Long.MAX_VALUE, HttpMethod.GET, entity, FarmResponse.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
+
+    @Test
+    public void farmDetails_return403_whenNotOwner() {
+
+        String ownerToken = registerAndLogin();
+        String otherToken = registerAndLogin();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(ownerToken);
+
+        FarmRequest farmRequest = new FarmRequest("Owner's farm", "Radinac", BigDecimal.valueOf(11.5));
+
+        HttpEntity<FarmRequest> entity = new HttpEntity<>(farmRequest, headers);
+        ResponseEntity<FarmResponse> response = restTemplate.postForEntity("/api/farms", entity, FarmResponse.class);
+
+        Long farmId = response.getBody().getId();
+
+        HttpHeaders headers2 = new HttpHeaders();
+        headers2.setBearerAuth(otherToken);
+        
+        HttpEntity<Void> entity2 = new HttpEntity<>(headers2);
+        ResponseEntity<FarmResponse> finalResponse = restTemplate.exchange("/api/farms/" + farmId, HttpMethod.GET, entity2, FarmResponse.class);
+
+        assertThat(finalResponse.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    }
 }
