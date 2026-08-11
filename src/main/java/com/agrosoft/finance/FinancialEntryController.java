@@ -3,7 +3,6 @@ package com.agrosoft.finance;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.agrosoft.farm.Farm;
-import com.agrosoft.farm.FarmRepository;
+import com.agrosoft.farm.FarmAccessService;
 import com.agrosoft.user.User;
 
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,12 +26,12 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/farms/{farmId}/entries")
 public class FinancialEntryController {
     
-    private FarmRepository farmRepository;
     private FinancialEntryRepository financialEntryRepository;
+    private FarmAccessService farmAccessService;
 
-    public FinancialEntryController(FarmRepository farmRepository, FinancialEntryRepository financialEntryRepository) {
-        this.farmRepository = farmRepository;
+    public FinancialEntryController(FinancialEntryRepository financialEntryRepository, FarmAccessService farmAccessService) {
         this.financialEntryRepository = financialEntryRepository;
+        this.farmAccessService = farmAccessService;
     }
 
     private FinancialEntryResponse convertToFinancialEntryResponse(FinancialEntry entry) {
@@ -44,17 +43,7 @@ public class FinancialEntryController {
 
     @GetMapping
     public ResponseEntity<?> financeList(@PathVariable Long farmId, @AuthenticationPrincipal User currentUser) {
-        Optional<Farm> farmOptional = farmRepository.findById(farmId);
-
-        if (farmOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Gazdinstvo ne postoji!");
-        }
-
-        Farm farm = farmOptional.get();
-
-        if (!farm.getOwner().getId().equals(currentUser.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Zabranjen pristup!");
-        }
+        farmAccessService.requireOwnedFarm(farmId, currentUser);
 
         return ResponseEntity.ok(financialEntryRepository.findByFarmId(farmId).stream()
                 .map(this::convertToFinancialEntryResponse)
@@ -63,16 +52,7 @@ public class FinancialEntryController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> financeDetails(@PathVariable Long farmId, @PathVariable Long id, @AuthenticationPrincipal User currentUser) {
-        Optional<Farm> farmOptional = farmRepository.findById(farmId);
-
-        if (farmOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Gazdinstvo ne postoji!");
-        }
-
-        Farm farm = farmOptional.get();
-        if (!farm.getOwner().getId().equals(currentUser.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Zabranjen pristup!");
-        }
+       farmAccessService.requireOwnedFarm(farmId, currentUser);
 
         Optional<FinancialEntry> entryOptional = financialEntryRepository.findById(id);
         if (entryOptional.isEmpty()) {
@@ -90,15 +70,7 @@ public class FinancialEntryController {
     @PostMapping
     public ResponseEntity<?> createEntry(@PathVariable Long farmId, @Valid @RequestBody FinancialEntryRequest financialEntryRequest, BindingResult bindingResult, @AuthenticationPrincipal User currentUser) {
 
-        Optional<Farm> farmOptional = farmRepository.findById(farmId);
-        if (farmOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Gazdinstvo ne postoji!");
-        }
-
-        Farm farm = farmOptional.get();
-        if (!farm.getOwner().getId().equals(currentUser.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Zabranjen pristup!");
-        }
+        Farm farm = farmAccessService.requireOwnedFarm(farmId, currentUser);
 
         if (bindingResult.hasErrors()) {
             String errorMessage = bindingResult.getFieldErrors().stream()
@@ -117,15 +89,7 @@ public class FinancialEntryController {
     @PutMapping("/{id}")
     public ResponseEntity<?> changeEntryDetails(@PathVariable Long farmId, @PathVariable Long id, @Valid @RequestBody FinancialEntryRequest request, BindingResult bindingResult, @AuthenticationPrincipal User currentUser) {
         
-        Optional<Farm> farmOptional = farmRepository.findById(farmId);
-        if (farmOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Gazdinstvo ne postoji!");
-        }
-
-        Farm farm = farmOptional.get();
-        if (!farm.getOwner().getId().equals(currentUser.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Zabranjen pristup!");
-        }
+        farmAccessService.requireOwnedFarm(farmId, currentUser);
 
         Optional<FinancialEntry> entryOptional = financialEntryRepository.findById(id);
         if (entryOptional.isEmpty()) {
@@ -161,15 +125,7 @@ public class FinancialEntryController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteEntry(@PathVariable Long farmId, @PathVariable Long id, @AuthenticationPrincipal User currentUser) {
         
-        Optional<Farm> farmOptional = farmRepository.findById(farmId);
-        if (farmOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Gazdinstvo ne postoji!");
-        }
-
-        Farm farm = farmOptional.get();
-        if (!farm.getOwner().getId().equals(currentUser.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Zabranjen pristup!");
-        }
+        farmAccessService.requireOwnedFarm(farmId, currentUser);
 
         Optional<FinancialEntry> entryOptional = financialEntryRepository.findById(id);
         if (entryOptional.isEmpty()) {

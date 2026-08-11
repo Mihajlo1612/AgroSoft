@@ -1,7 +1,6 @@
 package com.agrosoft.farm;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +26,16 @@ import jakarta.validation.Valid;
 public class FarmController {
 
     private final FarmRepository farmRepository;
+    private FarmAccessService farmAccessService;
 
-    public FarmController(FarmRepository farmRepository) {
+    public FarmController(FarmRepository farmRepository, FarmAccessService farmAccessService) {
         this.farmRepository = farmRepository;
+        this.farmAccessService = farmAccessService;
+    }
+
+    private FarmResponse convertToFarmResponse(Farm farm) {
+        FarmResponse farmResponse = new FarmResponse(farm.getId(), farm.getName(), farm.getLocation(), farm.getSizeInHectars(), farm.getOwner().getId());
+        return farmResponse;
     }
     
     @GetMapping
@@ -42,23 +48,9 @@ public class FarmController {
     
     @GetMapping("/{id}")
     public ResponseEntity<?> farmDetails(@PathVariable Long id, @AuthenticationPrincipal User currentUser) {
-        Optional<Farm> farmOptional = farmRepository.findById(id);
-        
-        if (farmOptional.isEmpty()) { 
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Gazdinstvo ne postoji!");
-        }
-        Farm farm = farmOptional.get();
-
-        if (!farm.getOwner().getId().equals(currentUser.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Zabranjen pristup!");
-        } 
+        Farm farm = farmAccessService.requireOwnedFarm(id, currentUser); 
 
         return ResponseEntity.ok(convertToFarmResponse(farm));
-    }
-
-    private FarmResponse convertToFarmResponse(Farm farm) {
-        FarmResponse farmResponse = new FarmResponse(farm.getId(), farm.getName(), farm.getLocation(), farm.getSizeInHectars(), farm.getOwner().getId());
-        return farmResponse;
     }
 
     @PostMapping
@@ -80,7 +72,6 @@ public class FarmController {
     @PutMapping("/{id}")
     public ResponseEntity<?> changeFarmDetails(@PathVariable Long id, @Valid @RequestBody FarmRequest farmRequest, BindingResult bindingResult, @AuthenticationPrincipal User currentUser) {
         
-        Optional<Farm> farmOptional = farmRepository.findById(id);
         if (bindingResult.hasErrors()) {
             String errorMessage = bindingResult.getFieldErrors().stream()
                     .map(FieldError::getDefaultMessage)
@@ -89,14 +80,7 @@ public class FarmController {
             return ResponseEntity.badRequest().body(errorMessage);
         }
 
-        if (farmOptional.isEmpty()) { 
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Gazdinstvo ne postoji!");
-        }
-
-        Farm farm = farmOptional.get();
-        if (!farm.getOwner().getId().equals(currentUser.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Zabranjen pristup!");
-        } 
+        Farm farm = farmAccessService.requireOwnedFarm(id, currentUser); 
 
         farm.setName(farmRequest.getName());
         farm.setLocation(farmRequest.getLocation());
@@ -108,16 +92,7 @@ public class FarmController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteFarm(@PathVariable Long id, @AuthenticationPrincipal User currentUser) {
-        Optional<Farm> farmOptional = farmRepository.findById(id);
-        
-        if (farmOptional.isEmpty()) { 
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Gazdinstvo ne postoji!");
-        }
-        Farm farm = farmOptional.get();
-
-        if (!farm.getOwner().getId().equals(currentUser.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Zabranjen pristup!");
-        } 
+        Farm farm = farmAccessService.requireOwnedFarm(id, currentUser); 
 
         farmRepository.delete(farm);
         return ResponseEntity.noContent().build();
