@@ -61,7 +61,7 @@ public class FinancialEntryController {
 
         FinancialEntry entry = entryOptional.get();
         if (!entry.getFarm().getId().equals(farmId)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Zabranjen pristup trazenoj stavki!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Zabranjen pristup!");
         }
 
         return ResponseEntity.ok(convertToFinancialEntryResponse(entry));

@@ -12,6 +12,7 @@ import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRe
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -61,4 +62,23 @@ public class FinancialEntryControllerTest {
 
         assertThat(financialResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
-}
+
+    @Test
+    public void financeDetails_returns404_whenFarmDoesNotExist() {
+        String token = registerAndLogin();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+
+        FarmRequest farmRequest = new FarmRequest("Radojevic", "Vranovo", BigDecimal.valueOf(30.1));
+        
+        HttpEntity<FarmRequest> entity = new HttpEntity<>(farmRequest, headers);
+        ResponseEntity<FarmResponse> response = restTemplate.postForEntity("/api/farms", entity, FarmResponse.class);
+
+        Long farmId = response.getBody().getId();
+
+        HttpEntity<Void> entity2 = new HttpEntity<>(headers);
+        ResponseEntity<String> financialResponse = restTemplate.exchange("/api/farms/" + farmId + "/entries/" + Long.MAX_VALUE, HttpMethod.GET, entity2, String.class);
+
+        assertThat(financialResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+ }
