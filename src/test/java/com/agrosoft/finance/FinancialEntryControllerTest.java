@@ -148,4 +148,53 @@ public class FinancialEntryControllerTest {
 
         assertThat(financialResponse.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
+
+    @Test
+    public void deleteEntry_returns204_whenSuccessful() {
+        String ownerToken = registerAndLogin();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(ownerToken);
+
+        FarmRequest farmRequest = new FarmRequest("TestFarm", "Drugovac", BigDecimal.valueOf(15.3));
+
+        HttpEntity<FarmRequest> entity = new HttpEntity<>(farmRequest, headers);
+        ResponseEntity<FarmResponse> response = restTemplate.postForEntity("/api/farms", entity, FarmResponse.class);
+
+        Long farmId = response.getBody().getId();
+
+        FinancialEntryRequest financialRequest = new FinancialEntryRequest(EntryType.RASHOD,
+                BigDecimal.valueOf(454.234), EntryCategory.POTROSNA_ROBA, 2026, 4, true, "Jagode");
+
+        HttpEntity<FinancialEntryRequest> financialEntity = new HttpEntity<>(financialRequest, headers);
+        ResponseEntity<FinancialEntryResponse> financialResponse = restTemplate
+                .postForEntity("/api/farms/" + farmId + "/entries", financialEntity, FinancialEntryResponse.class);
+
+        Long entryId = financialResponse.getBody().getId();
+
+        HttpEntity<Void> entity2 = new HttpEntity<>(headers);
+
+        ResponseEntity<Void> finalResponse = restTemplate.exchange("/api/farms/" + farmId + "/entries/" + entryId,
+                HttpMethod.DELETE, entity2, Void.class);
+
+        assertThat(finalResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        
+    }
+
+    @Test
+    public void deleteEntry_returns404_whenEntryDoesNotExist() {
+        String ownerToken = registerAndLogin();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(ownerToken);
+
+        FarmRequest farmRequest = new FarmRequest("Farmica", "Grocka", BigDecimal.valueOf(3));
+        HttpEntity<FarmRequest> entity = new HttpEntity<>(farmRequest, headers);
+        ResponseEntity<FarmResponse> farmResponse = restTemplate.postForEntity("/api/farms", entity, FarmResponse.class);
+
+        Long farmId = farmResponse.getBody().getId();
+
+        HttpEntity<Void> entity3 = new HttpEntity<>(headers);
+        ResponseEntity<Void> finalResponse = restTemplate.exchange("/api/farms/" + farmId + "/entries/" + Long.MAX_VALUE, HttpMethod.DELETE, entity3, Void.class);
+
+        assertThat(finalResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
 }
