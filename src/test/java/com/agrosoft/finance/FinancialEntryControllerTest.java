@@ -64,7 +64,7 @@ public class FinancialEntryControllerTest {
     }
 
     @Test
-    public void financeDetails_returns404_whenFarmDoesNotExist() {
+    public void financeDetails_returns404_whenEntryDoesNotExist() {
         String token = registerAndLogin();
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
@@ -80,5 +80,36 @@ public class FinancialEntryControllerTest {
         ResponseEntity<String> financialResponse = restTemplate.exchange("/api/farms/" + farmId + "/entries/" + Long.MAX_VALUE, HttpMethod.GET, entity2, String.class);
 
         assertThat(financialResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    public void financeDetails_returns403_whenNotOwner() {
+         String ownerToken = registerAndLogin();
+         String otherToken = registerAndLogin();
+
+         HttpHeaders headers = new HttpHeaders();
+         headers.setBearerAuth(ownerToken);
+
+         HttpHeaders headers2 = new HttpHeaders();
+         headers2.setBearerAuth(otherToken);
+
+         FarmRequest farmRequest = new FarmRequest("Draganova farma", "Seone", BigDecimal.valueOf(13.2));
+
+         HttpEntity<FarmRequest> entity = new HttpEntity<>(farmRequest, headers);
+         ResponseEntity<FarmResponse> response = restTemplate.postForEntity("/api/farms", entity, FarmResponse.class);
+
+         Long farmId = response.getBody().getId();
+
+         FinancialEntryRequest financialRequest = new FinancialEntryRequest(EntryType.PRIHOD, BigDecimal.valueOf(400.000), EntryCategory.MASINA, 2026, 7, true, "Setvospremac");
+
+         HttpEntity<FinancialEntryRequest> entity2 = new HttpEntity<>(financialRequest, headers);
+        ResponseEntity<FinancialEntryResponse> financialResponse = restTemplate.postForEntity("/api/farms/" + farmId + "/entries", entity2, FinancialEntryResponse.class);
+
+        Long entryId = financialResponse.getBody().getId();
+
+        HttpEntity<Void> entity3 = new HttpEntity<>(headers2);
+        ResponseEntity<String> finalResponse = restTemplate.exchange("/api/farms/" + farmId + "/entries/" + entryId, HttpMethod.GET, entity3, String.class);
+
+        assertThat(finalResponse.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
  }
