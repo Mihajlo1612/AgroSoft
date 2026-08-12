@@ -197,4 +197,41 @@ public class FinancialEntryControllerTest {
 
         assertThat(finalResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
+
+    @Test
+    public void deleteEntry_return403_whenNotOwner() {
+        String ownerToken = registerAndLogin();
+        String otherToken = registerAndLogin();
+
+        HttpHeaders ownerHeaders = new HttpHeaders();
+        ownerHeaders.setBearerAuth(ownerToken);
+
+        HttpHeaders otherHeaders = new HttpHeaders();
+        otherHeaders.setBearerAuth(otherToken);
+
+        FarmRequest farmRequest = new FarmRequest("Radojeva farma", "Binovac", BigDecimal.valueOf(12.5));
+
+        HttpEntity<FarmRequest> entity = new HttpEntity<>(farmRequest, ownerHeaders);
+        ResponseEntity<FarmResponse> response = restTemplate.postForEntity("/api/farms", entity, FarmResponse.class);
+
+        Long farmId = response.getBody().getId();
+
+        FinancialEntryRequest financialRequest = new FinancialEntryRequest(EntryType.RASHOD,
+                BigDecimal.valueOf(454.234), EntryCategory.POTROSNA_ROBA, 2026, 4, true, "Jagode");
+
+        HttpEntity<FinancialEntryRequest> financialEntity = new HttpEntity<>(financialRequest, ownerHeaders);
+        ResponseEntity<FinancialEntryResponse> financialResponse = restTemplate
+                .postForEntity("/api/farms/" + farmId + "/entries", financialEntity, FinancialEntryResponse.class);
+
+        Long entryId = financialResponse.getBody().getId();
+
+        HttpEntity<Void> entity2 = new HttpEntity<>(otherHeaders);
+
+        ResponseEntity<Void> finalResponse = restTemplate.exchange("/api/farms/" + farmId + "/entries/" + entryId,
+                HttpMethod.DELETE, entity2, Void.class);
+
+        assertThat(finalResponse.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    }
+
+    
 }
