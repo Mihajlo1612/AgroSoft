@@ -233,5 +233,38 @@ public class FinancialEntryControllerTest {
         assertThat(finalResponse.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 
+    @Test
+    public void changeEntryDetails_returns200_whenDataIsValid() {
+        String ownerToken = registerAndLogin();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(ownerToken);
+
+        FarmRequest farmRequest = new FarmRequest("Radojeva farma", "Binovac", BigDecimal.valueOf(12.5));
+
+        HttpEntity<FarmRequest> farmEntity = new HttpEntity<>(farmRequest, headers);
+        ResponseEntity<FarmResponse> farmResponse = restTemplate.postForEntity("/api/farms", farmEntity, FarmResponse.class);
+
+        Long farmId = farmResponse.getBody().getId();
+
+        FinancialEntryRequest financialRequest = new FinancialEntryRequest(EntryType.RASHOD,
+                BigDecimal.valueOf(454.234), EntryCategory.POTROSNA_ROBA, 2026, 4, true, "Jagode");
+
+        HttpEntity<FinancialEntryRequest> financialEntity = new HttpEntity<>(financialRequest, headers);
+        ResponseEntity<FinancialEntryResponse> financialResponse = restTemplate.postForEntity("/api/farms/" + farmId + "/entries", financialEntity, FinancialEntryResponse.class);
+
+        Long entryId = financialResponse.getBody().getId();
+
+        FinancialEntryRequest newFinancialRequest = new FinancialEntryRequest(EntryType.RASHOD,
+                BigDecimal.valueOf(362.234), EntryCategory.POTROSNA_ROBA, 2025, 6, true, "Tresnje");
+        
+        HttpEntity<FinancialEntryRequest> newFinancialEntity = new HttpEntity<>(newFinancialRequest, headers);
+        ResponseEntity<FinancialEntryResponse> newFinancialResponse = restTemplate.exchange("/api/farms/" + farmId + "/entries/" + entryId, HttpMethod.PUT, newFinancialEntity, FinancialEntryResponse.class);
+
+        assertThat(newFinancialResponse.getBody().getAmount()).isEqualTo(newFinancialRequest.getAmount());
+        assertThat(newFinancialResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        
+    }
     
 }
