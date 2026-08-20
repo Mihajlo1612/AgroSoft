@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{baseUrl}}/api/farms/:id"
+method: DELETE
+headers:
+  Accept: "*/*"
+pathVariables:
+  id: "8010"
+settings: {}
+examples: ./.resources/delete Farm.resources/examples
+order: 3000

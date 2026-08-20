@@ -1,0 +1,19 @@
+$kind: http-request
+url: "{{baseUrl}}/api/farms/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  id: "8010"
+body:
+  type: json
+  content: |-
+    {
+      "location": "string",
+      "name": "string",
+      "sizeInHectars": 8070.875502814293
+    }
+settings: {}
+examples: ./.resources/change Farm Details.resources/examples
+order: 2000

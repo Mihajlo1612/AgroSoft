@@ -45,7 +45,7 @@ public class FinancialEntryControllerTest {
     }
 
     @Test
-    public void createEntry_returns201_whenDataIsValid() {
+    public void createEntry_returns201_whenDataIsValid() { 
         String token = registerAndLogin();
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);

@@ -1,0 +1,30 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/api/farms/:farmId/entries"
+  method: POST
+  headers:
+    Content-Type: application/json
+    Accept: "*/*"
+  pathVariables:
+    farmId: "8010"
+  body:
+    type: json
+    content: |-
+      {
+        "amount": 2515.3778480909896,
+        "category": "MASINA",
+        "description": "string",
+        "month": 3,
+        "type": "INVESTICIJA",
+        "year": 6517,
+        "planned": false
+      }
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: "{}"
+order: 1000
