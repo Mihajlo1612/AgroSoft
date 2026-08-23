@@ -1,0 +1,31 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/api/farms"
+  method: GET
+  headers:
+    Accept: "*/*"
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      [
+        {
+          "id": 6046,
+          "name": "string",
+          "location": "string",
+          "sizeInHectars": 7349.898650050119,
+          "ownerId": 5215
+        },
+        {
+          "id": 2650,
+          "name": "string",
+          "location": "string",
+          "sizeInHectars": 8711.791949826087,
+          "ownerId": 8743
+        }
+      ]
+order: 1000

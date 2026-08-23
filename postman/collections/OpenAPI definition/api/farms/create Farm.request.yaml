@@ -1,0 +1,17 @@
+$kind: http-request
+url: "{{baseUrl}}/api/farms"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "location": "string",
+      "name": "string",
+      "sizeInHectars": 8070.875502814293
+    }
+settings: {}
+examples: ./.resources/create Farm.resources/examples
+order: 4000

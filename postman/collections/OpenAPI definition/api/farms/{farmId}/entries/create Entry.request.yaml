@@ -1,0 +1,23 @@
+$kind: http-request
+url: "{{baseUrl}}/api/farms/:farmId/entries"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  farmId: "8010"
+body:
+  type: json
+  content: |-
+    {
+      "amount": 2515.3778480909896,
+      "category": "MASINA",
+      "description": "string",
+      "month": 3,
+      "type": "INVESTICIJA",
+      "year": 6517,
+      "planned": false
+    }
+settings: {}
+examples: ./.resources/create Entry.resources/examples
+order: 3000

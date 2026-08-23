@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{baseUrl}}/api/farms/:id"
+method: GET
+headers:
+  Accept: "*/*"
+pathVariables:
+  id: "8010"
+settings: {}
+examples: ./.resources/farm Details.resources/examples
+order: 1000
